@@ -5,15 +5,16 @@ The project uses SwiftUI to complete the steps for the Memorize game built in th
 
 It allows users to select and pair cards that are the same.
 
-Game screenshots
+### Game screenshots
 
-![](https://i.imgur.com/VRrn9Da.png)
+![Game Screenshot](https://i.imgur.com/h3nR8ya.png)
+![Game Screenshot](https://i.imgur.com/hL6Z6lb.png)
 
 
-Core Tech
+### Core Tech
 
 Xcode
-Swift
+Swift 5.3
 SwiftUI
   - MVVM
   - Animation
@@ -23,5 +24,16 @@ SwiftUI
   - Reactive UI
   - Enum and Struct
   - ViewBuilder
-  
+ 
+### Usage steps
+- Fork this repo and clone to your prefered working directory by using git clone ```https://github.com/Ghizmilth/iOS-memorize-game.git```
+- Open Xcode in your computer. If you don't have Xcode, you can download it here: [Xcode](https://developer.apple.com/download/) NOTE: It only works with Apple computers.
+- Open Xcode
+- Open a project then select the file Memorize.xcodeproj
+- Enjoy!
+ 
+### Missing Features
+- Users are not able to get points for every set of cards matched
+- There is no victory message to indicate the game has been won
+- Timer
 
