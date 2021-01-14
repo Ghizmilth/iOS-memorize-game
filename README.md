@@ -7,7 +7,7 @@ It allows users to select and pair cards that are the same.
 
 Game screenshots
 
-![](https://imgur.com/VRrn9Da)
+![](https://i.imgur.com/VRrn9Da.png)
 
 
 Core Tech
