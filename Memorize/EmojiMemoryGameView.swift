@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemoryGameView.swift
 //  Memorize
 //
 //  Created by Hidaner Ferrer on 1/9/21.
@@ -13,23 +13,29 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     
     // This represents the connection between View and ViewModel controller
-    var viewModel: EmojiMemoryGame
+    // This @ObservedObject is because the 'EmojiMemoryGame' has a constraint of ObservableObject and once it changes over there, it tells the View to re-draw the screen
+    @ObservedObject var viewModel: EmojiMemoryGame
     
     // The 'body' var is for the system to obtain it and then showing it on the view
     var body: some View {
         // The code below is a View Builder and we're not allowed to create Variables in them
-        HStack {
-            ForEach(viewModel.cards) { card in
+        VStack {
+            Grid(viewModel.cards) { card in
                 CardView(card: card).onTapGesture {
-                    viewModel.choose(card: card)
+                    withAnimation(.linear(duration: 0.5)) {
+                        viewModel.choose(card: card)
+                    }
                 }
+                .padding(5)
             }
+                .padding()
+                .foregroundColor(.orange)
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    self.viewModel.resetGame()
+                }
+            }, label: { Text("New Game") })
         }
-        .padding()
-        .foregroundColor(.orange)
-        .font(Font.largeTitle)
-        
-        
     }
 }
 
@@ -38,22 +44,66 @@ struct CardView: View {
     var card: MemoryGame<String>.Card
 
     var body: some View {
-        ZStack() {
-            if card.isFaceUp {
-                RoundedRectangle(cornerRadius: 10.0).fill(Color.white)
-                RoundedRectangle(cornerRadius: 10.0).stroke(lineWidth: 3)
+        GeometryReader { geometry in
+            self.body(for: geometry.size)
+        }
+    }
+    
+    // allows the pie to access the model bonus remaining
+    @State private var animatedBonusRemaining: Double = 0
+    
+    private func startBonusTimeAnimation() {
+        animatedBonusRemaining = card.bonusRemaining
+        withAnimation(.linear(duration: card.bonusTimeRemaining)) {
+            animatedBonusRemaining = 0
+        }
+    }
+    
+    @ViewBuilder
+    private func body(for size: CGSize) -> some View {
+        if card.isFaceUp || !card.isMatched {
+            ZStack() {
+                Group{
+                    if card.isConsumingBonusTime {
+                        Pie(startAngle: Angle.degrees(0-90), endAngle: Angle.degrees(-animatedBonusRemaining*360-90), clockwise: true)
+                           .onAppear {
+                                self.startBonusTimeAnimation()
+                            }
+                    } else {
+                        Pie(startAngle: Angle.degrees(0-90), endAngle: Angle.degrees(-card.bonusRemaining*360-90), clockwise: true)    
+                    }
+                }.padding(5).opacity(0.4)
+               
                 Text(card.content)
-            } else {
-                RoundedRectangle(cornerRadius: 10.0).fill()
+                    .font(Font.system(size: fontSize(for: size)))
+                    .rotationEffect(Angle.degrees(card.isMatched ? 360: 0))
+                    .animation(card.isMatched ? Animation.linear(duration: 1).repeatForever(autoreverses: false) : .default)
             }
-        }.aspectRatio(0.75, contentMode: .fit)
+             .cardify(isFaceUp: card.isFaceUp)
+            .transition(AnyTransition.scale)
+            
+        }
+     }
+
+    
+    
+    // We are using this MARK to get the numbers from our declarations above into contants so the code is cleaner
+    // MARK: - Drawing Constants
+    
+    private func fontSize(for size: CGSize) -> CGFloat {
+        min(size.width, size.height) * 0.7
     }
 }
+
+
+    
 
 
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        EmojiMemoryGameView(viewModel: EmojiMemoryGame())
+        let game = EmojiMemoryGame()
+        game.choose(card: game.cards[0])
+        return EmojiMemoryGameView(viewModel: game)
     }
 }
