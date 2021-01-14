@@ -29,7 +29,9 @@ SwiftUI
 - Fork this repo and clone to your prefered working directory by using git clone ```https://github.com/Ghizmilth/iOS-memorize-game.git```
 - Open Xcode in your computer. If you don't have Xcode, you can download it here: [Xcode](https://developer.apple.com/download/) NOTE: It only works with Apple computers.
 - Open Xcode
-- Open a project then select the file Memorize.xcodeproj
+- Open a project then select the file ```Memorize.xcodeproj```
+- Select the preferred simulator option (i.e. iPhone 7, iPhone 12, etc)
+- Run the application
 - Enjoy!
  
 ### Missing Features
